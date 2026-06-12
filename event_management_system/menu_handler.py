@@ -170,11 +170,9 @@ class MenuHandler:
         user_choice = self._get_menu_choice(1,2)
         
         user_role = None
-
-        if user_choice == 1:
-            user_role = UserRole.PARTICIPANT
-        elif user_choice == 2:
-            user_role = UserRole.ADMIN
+        
+        role_map = {1: UserRole.PARTICIPANT, 2:UserRole.ADMIN}
+        user_role = role_map.get(user_choice)
 
         try:
             new_user = self.user_service.register_user(user_name, user_email, user_role)
