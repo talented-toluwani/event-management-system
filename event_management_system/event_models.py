@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
+
 from event_enums import UserRole
+
 
 @dataclass
 class Event:

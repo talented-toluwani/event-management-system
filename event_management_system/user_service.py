@@ -1,7 +1,9 @@
-import event_exceptions
 import re
-from event_enums import UserRole
+
+import event_exceptions
 from event_models import User
+
+
 class UserService:
     def __init__(self, user_repository, registration_repository, event_repository):
         self.user_repository = user_repository

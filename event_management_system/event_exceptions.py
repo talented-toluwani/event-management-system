@@ -1,7 +1,7 @@
 class EventSystemError(Exception):
      """Parent class for the other custom made exception class, it groups all the customs 
      exceptions as one"""
-     pass
+    
 
 class EventFullError(EventSystemError):
     """raises a custom error message is the maximum capacity for an event has been reached"""

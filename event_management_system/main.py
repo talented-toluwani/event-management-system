@@ -1,13 +1,15 @@
-import sys
 import logging
-from event_database import init_database, get_connection
+import sys
+
 import event_config
+from event_database import get_connection, init_database
 from event_repository import EventRepository
-from user_repository import UserRepository
-from registration_repository import RegistrationRepository
 from event_service import EventService
-from user_service import UserService
 from menu_handler import MenuHandler
+from registration_repository import RegistrationRepository
+from user_repository import UserRepository
+from user_service import UserService
+
 
 def setup_logging():
     logging.basicConfig(

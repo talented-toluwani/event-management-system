@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class UserRole(Enum):
     '''A list of constant strings that will be used in the user role. This is to prevent unnecessary 
     strings that will be used in the program'''

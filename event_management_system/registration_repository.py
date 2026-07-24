@@ -1,7 +1,8 @@
-import event_exceptions as event_exceptions
 import logging
 from datetime import datetime
-from event_models import User, Event
+
+import event_exceptions as event_exceptions
+from event_models import Event, User
 
 
 class RegistrationRepository:

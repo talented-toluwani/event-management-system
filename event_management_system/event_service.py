@@ -1,11 +1,13 @@
 import logging
 import uuid
-import event_exceptions
-from event_schema import EventSchema
-from event_models import Event
-from event_enums import EventStatus
-from pydantic import ValidationError
 from typing import List
+
+import event_exceptions
+from event_enums import EventStatus
+from event_models import Event
+from event_schema import EventSchema
+from pydantic import ValidationError
+
 
 class EventService:
     def __init__(self,event_repository, registration_repository):

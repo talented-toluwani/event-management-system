@@ -1,8 +1,9 @@
-from event_models import Event
 import logging
-from datetime import datetime 
+from datetime import datetime
+
 from event_enums import EventCategory, EventStatus
 from event_exceptions import EventNotFound
+from event_models import Event
 
 
 class EventRepository:

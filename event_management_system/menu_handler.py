@@ -1,8 +1,10 @@
-import logging 
-import event_exceptions
-from event_enums import UserRole, EventCategory, EventStatus
-from event_config import DISPLAY_DATE_FORMAT, DATE_FORMAT
+import logging
 from datetime import datetime
+
+import event_exceptions
+from event_config import DATE_FORMAT, DISPLAY_DATE_FORMAT
+from event_enums import EventCategory, EventStatus, UserRole
+
 
 class MenuHandler:
 

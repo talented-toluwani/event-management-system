@@ -1,6 +1,8 @@
-from event_models import User 
-import logging 
+import logging
+
 import event_exceptions as event_exceptions
+from event_models import User
+
 
 class UserRepository:
     def __init__(self,connection):
