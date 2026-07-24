@@ -79,7 +79,7 @@ Installation
 
 bash
 # Clone the repository
-git clone https://github.com/your-username/vantag-event-management.git
+git clone https://github.com/talented-toluwani/vantag-event-management.git
 
 # Navigate into the project directory
 cd vantag-event-management
