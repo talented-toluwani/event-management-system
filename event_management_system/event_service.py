@@ -1,6 +1,5 @@
 import logging
 import uuid
-from typing import List
 
 import event_exceptions
 from event_enums import EventStatus
@@ -196,7 +195,3 @@ class EventService:
         self.event_repository.delete(event_id)
         return True
         
-    
-
-       
-
