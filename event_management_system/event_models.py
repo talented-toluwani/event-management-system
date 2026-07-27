@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 
-from event_enums import UserRole
+from event_enums import EventCategory, EventStatus, UserRole
 
 
 @dataclass
@@ -11,9 +11,9 @@ class Event:
     description: str 
     date_time: datetime 
     max_capacity: int 
-    category: str
+    category:EventCategory
     current_participants: int 
-    status: str 
+    status: EventStatus
 
     @property
     def is_full(self) -> bool: #checks if the number of participant is more than the maxium capacity required, and returns the complementary boolean answer
@@ -25,7 +25,7 @@ class Event:
     
     @property
     def is_upcoming(self):
-         return self.date_time > datetime.now()
+        return self.date_time > datetime.now(timezone.utc)
     
 @dataclass
 class User:
