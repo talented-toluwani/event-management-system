@@ -1,4 +1,7 @@
 import logging
+
+logger = logging.getLogger(__name__)
+
 from datetime import datetime
 
 from event_enums import EventCategory, EventStatus
@@ -39,7 +42,7 @@ class EventRepository:
 
            except Exception:
                 self.connection.rollback()
-                logging.error("An error occurres in the create method", exc_info= True)
+                logger.error("An error occurres in the create method")
                 raise
            
            finally:
@@ -60,42 +63,34 @@ class EventRepository:
                if row is not None: #validates if there are any data stored in my_row
                 return self._row_to_event(row) #a function call for the helper function
                
-           except EventNotFound(event_id):
-               logging.error("The evnent to be fetched was not gotten", exc_info = True)
+           except EventNotFound:
+               logger.exception("The event to be fetched was not gotten")
                raise 
 
            except Exception:
-                logging.error("An error occurred in get_by_id", exc_info=True)
+                logger.error("An error occurred in get_by_id")
                 raise #raises database error,so user know domething went well.
 
            finally:
                 if  cursor is not None:
                  cursor.close()
 
-      def _row_to_event(self, row):#internal or helper function that convets row to event object
+      def _row_to_event(self, row):
+          
+            """
+            internal or helper function that convets row to event object
+            """
             date_time = datetime.strptime(row[3], "%Y-%m-%d %H:%M")#convertes data time stored as string
-
-            raw_category = row[5]
-            try:
-                converted_category = EventCategory(raw_category)
-            except ValueError:
-                converted_category = None
-
-            raw_status = row[7]
-            try:
-               converted_status = EventStatus(raw_status)
-            except ValueError:
-                converted_status = None
-
+            cateory_enum = EventCategory
             return Event(
-                event_id= int(row[0]),
+                event_id= row[0],
                 title = row[1],
                 description = row[2],
                 date_time= date_time,
                 max_capacity= int(row[4]),
-                category= converted_category,
+                category= EventCategory,
                 current_participants= int(row[6]),
-                status= converted_status) # does data extraction by mapping  the event object to an id
+                status= EventStatus) # does data extraction by mapping  the event object to an id
       
       def get_all_events(self): #fetches all the event ordered by date
            cursor = None
@@ -112,8 +107,8 @@ class EventRepository:
                     events_lists.append(event_object) #adds the event to the list
                 return events_lists #returns the complete list
             
-           except Exception as e: #this is what happens incase an error exists 
-                 logging.error("An error occurred in get_all", exc_info=True)
+           except Exception: #this is what happens incase an error exists 
+                 logger.exception("An error occurred in get_all")
                  raise 
 
            finally: #closes the cursor
@@ -141,7 +136,7 @@ class EventRepository:
               return event_list
             
           except Exception:
-              logging.error("Error in get_events_by_user", exc_info=True)
+              logger.error("Error in get_events_by_user")
               raise
           
           finally:
@@ -165,7 +160,7 @@ class EventRepository:
                 return event_upcoming_list
            
            except Exception :#prints an error message, if an error is encountered
-                logging.error("An error occurred in get_upcoming", exc_info=True)
+                logger.exception("An error occurred in get_upcoming")
                 return []
            
            finally: #closes the cursor 
@@ -188,7 +183,7 @@ class EventRepository:
             return search_lists
         
         except Exception:
-            logging.error("An error occurred in search", exc_info=True)
+            logger.exception("An error occurred in search")
             return []
 
         finally:
@@ -210,7 +205,7 @@ class EventRepository:
               return category_list
           
           except Exception:
-              logging.error("An error occurred in get_by_category", exc_info = True)
+              logger.exception("An error occurred in get_by_category")
               return []
 
           finally:
@@ -259,7 +254,7 @@ class EventRepository:
               return event
           
           except Exception:
-              logging.error("An error occurred in update", exc_info = True)
+              logger.error("An error occurred in update")
               raise
 
           finally:
@@ -288,7 +283,7 @@ class EventRepository:
               return True 
           
           except Exception:
-              logging.error("An error occurred in delete", exc_info = True)
+              logger.error("An error occurred in delete")
               raise
 
           finally:
@@ -309,7 +304,7 @@ class EventRepository:
               return count
 
           except Exception:
-              logging.error("An error occurred in get_participant_count", exc_info= True)
+              logger.exception("An error occurred in get_participant_count")
               raise
               
           finally:

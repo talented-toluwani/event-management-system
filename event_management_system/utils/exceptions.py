@@ -1,7 +1,5 @@
 class EventSystemError(Exception):
-     """Parent class for the other custom made exception class, it groups all the customs 
-     exceptions as one"""
-    
+    pass
 
 class EventFullError(EventSystemError):
     """raises a custom error message is the maximum capacity for an event has been reached"""
@@ -23,8 +21,8 @@ class DuplicateRegistration(EventSystemError):
 class EventNotFound(EventSystemError):
      """raises a custom made error if an event is not found"""
      def __init__(self, event_id):
-          message = "Oops! Event not found. Please, ensure you typed in entered the right information." 
           self.event_id = event_id
+          message = "Oops! Event not found. Please, ensure you typed in entered the right information." 
           super().__init__(message)
 
 class UserNotFound(EventSystemError):
