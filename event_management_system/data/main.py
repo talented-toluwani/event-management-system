@@ -1,20 +1,20 @@
 import logging
 import sys
 
-import event_config
-from event_database import get_connection, init_database
-from event_repository import EventRepository
-from event_service import EventService
-from menu_handler import MenuHandler
-from registration_repository import RegistrationRepository
-from user_repository import UserRepository
-from user_service import UserService
+import data.config
+from database.connection import get_connection, init_database
+from database.event_repo import EventRepository
+from database.registration_repo import RegistrationRepository
+from database.user_repo import UserRepository
+from services.event_service import EventService
+from services.user_service import UserService
+from ui.menu import MenuHandler
 
 
 def setup_logging():
     logging.basicConfig(
-        level= getattr(logging, event_config.LOG_LEVEL),
-        format= event_config.LOG_FORMAT
+        level= getattr(logging, data.config.LOG_LEVEL),
+        format= data.config.LOG_FORMAT
     )
     
     logger = logging.getLogger(__name__)
