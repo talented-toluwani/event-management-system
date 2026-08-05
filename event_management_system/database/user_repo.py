@@ -1,7 +1,9 @@
 import logging
 
-import event_exceptions as event_exceptions
-from event_models import User
+logger = logging.getLogger(__name__)
+
+import utils.exceptions as event_exceptions
+from models.models import User
 
 
 class UserRepository:
@@ -21,11 +23,14 @@ class UserRepository:
            print("Started")
            cursor = self.connection.cursor()
            print("Executing query")
-           try:
-               cursor.execute(query, data)
-           except Exception as e:
-               print(f"Encountered error while executing {e}")
-               return None
+
+           try: 
+            cursor.execute(query, data)
+
+           except Exception:
+            logger.exception("Error occurred while creating user")
+            return None
+           
            print("Query executed")
 
            new_id = cursor.lastrowid
@@ -36,7 +41,7 @@ class UserRepository:
 
         except Exception:
            self.connection.rollback()
-           logging.error("Unexpected database error", exc_info= True)
+           logger.exception("Unexpected database error")
            raise
 
         finally:
@@ -69,7 +74,7 @@ class UserRepository:
                 raise event_exceptions.UserNotFound(user_id)
 
         except Exception:
-           logging.error("Unexpected database error", exc_info=True)
+           logger.exception("Unexpected database error")
            raise
 
         finally:
@@ -95,7 +100,7 @@ class UserRepository:
                 return None
         
         except Exception: 
-            logging.error("Unexpected database error", exc_info=True)
+            logger.exception("Unexpected database error")
             raise
 
         finally:
@@ -117,7 +122,7 @@ class UserRepository:
             return user_list
             
         except Exception:
-            logging.error("Unexpected database error", exc_info= True)
+            logger.exception("Unexpected database error")
             raise
 
         finally:
