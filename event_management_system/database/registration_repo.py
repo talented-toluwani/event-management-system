@@ -1,8 +1,9 @@
 import logging
-from datetime import datetime
 
-import event_exceptions as event_exceptions
-from event_models import Event, User
+logger = logging.getLogger(__name__)
+from datetime import datetime, timezone
+
+import utils.exceptions
 
 
 class RegistrationRepository:
@@ -26,14 +27,14 @@ class RegistrationRepository:
             user_count = cursor.fetchone()[0]
             
             if user_count == 0:
-                raise event_exceptions.UserNotFound(user_id)
+                raise utils.exceptions.UserNotFound(user_id)
             
             sql_query_event = "SELECT COUNT(*) from events_table WHERE event_id = ?"#fetches the users event id from the table
             cursor.execute(sql_query_event, (event_id,))
             event_count = cursor.fetchone()[0]
 
             if event_count == 0:
-                raise event_exceptions.EventNotFound(event_id)
+                raise utils.exceptions.EventNotFound(event_id)
             
             """checks for duplicate registration, by first checking if the user has registered for any event before"""
 
@@ -42,9 +43,9 @@ class RegistrationRepository:
             count_duplicate_registration = cursor.fetchone()[0]
 
             if count_duplicate_registration > 0:#checks if the user has registered before
-                raise event_exceptions.DuplicateRegistration(user_id, event_id,)
+                raise utils.exceptions.DuplicateRegistration(user_id, event_id,)
             
-            registered_at = datetime.now().strftime("%Y-%m-%d %H:%M")
+            registered_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
             sql_insert_query = "INSERT INTO registrations_table(user_id, event_id, registered_at) VALUES(?,?,?)"
             value = (user_id,
                      event_id,
@@ -57,7 +58,7 @@ class RegistrationRepository:
             
         except Exception:
             self.connection.rollback()
-            logging.error(f"Failed to register user {user_id} for event {event_id}", exc_info= True)
+            logger.exception(f"Failed to register user {user_id} for event {event_id}")
             raise
 
         finally:
@@ -80,17 +81,14 @@ class RegistrationRepository:
             cursor.execute(sql_query_1,(user_id, event_id,))
             
             if cursor.rowcount == 0:
-                raise event_exceptions.NotRegistered(user_id, event_id)
+                raise utils.exceptions.NotRegistered(user_id, event_id)
             
             self.connection.commit()
-
-        except event_exceptions.NotRegistered():
-            raise
-
+            
         except Exception:
-            logging.error(
+            logger.exception(
                 f"Failed to unregister user with user id: {user_id}"
-                f"from event with event id: {event_id}", exc_info= True)
+                f"from event with event id: {event_id}")
             raise
 
         finally:
@@ -114,15 +112,12 @@ class RegistrationRepository:
             cursor.execute(query, (user_id, event_id,))
             count = cursor.fetchone()[0]
 
-            if count == 0:
-                return False
-
-            return True
-
+            return count != 0
+        
         except Exception:
-            logging.error(
+            logger.exception(
                 f"Failed to verify if user with user id: {user_id} is registered "
-                f"for event with event id: {event_id}", exc_info= True)
+                f"for event with event id: {event_id}")
             raise
             
         finally:
@@ -148,7 +143,7 @@ class RegistrationRepository:
             return [row[0] for row in rows]
 
         except Exception:
-            logging.error(f"An error occurred while trying to get all the event ids for user with {user_id} user id", exc_info = True)
+            logger.exception(f"An error occurred while trying to get all the event ids for user with {user_id} user id")
             raise
 
         finally:
@@ -174,7 +169,7 @@ class RegistrationRepository:
             return [row[0] for row in rows]
 
         except Exception:
-            logging.error(f"An error occurred while trying to get all user ids for the event {event_id}", exc_info = True )
+            logger.exception(f"An error occurred while trying to get all user ids for the event {event_id}")
             raise
 
         finally:
