@@ -2,18 +2,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from datetime import datetime
+from datetime import datetime, timezone
 
-from event_enums import EventCategory, EventStatus
-from event_exceptions import EventNotFound
-from event_models import Event
+from models.enums import EventCategory, EventStatus
+from models.models import Event
+from utils.exceptions import EventNotFound
 
 
 class EventRepository:
       def __init__(self, connection) : #initializes with the connection object
             self.connection = connection #this is a databse connection, prevents every object from creating its own connection
       
-      def create(self, event: Event):
+      def create(self, event: Event) :
            cursor = None
            #inserting a new event into the database
            database = ("""INSERT INTO events_table(
@@ -67,9 +67,6 @@ class EventRepository:
                logger.exception("The event to be fetched was not gotten")
                raise 
 
-           except Exception:
-                logger.error("An error occurred in get_by_id")
-                raise #raises database error,so user know domething went well.
 
            finally:
                 if  cursor is not None:
@@ -80,17 +77,16 @@ class EventRepository:
             """
             internal or helper function that convets row to event object
             """
-            date_time = datetime.strptime(row[3], "%Y-%m-%d %H:%M")#convertes data time stored as string
-            cateory_enum = EventCategory
+            date_time = datetime.strptime(row[3], "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc)#convertes data time stored as string
             return Event(
                 event_id= row[0],
                 title = row[1],
                 description = row[2],
                 date_time= date_time,
                 max_capacity= int(row[4]),
-                category= EventCategory,
+                category= EventCategory(row[5]),
                 current_participants= int(row[6]),
-                status= EventStatus) # does data extraction by mapping  the event object to an id
+                status= EventStatus(row[7])) # does data extraction by mapping  the event object to an id
       
       def get_all_events(self): #fetches all the event ordered by date
            cursor = None
