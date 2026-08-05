@@ -5,11 +5,11 @@ logger = logging.getLogger(__name__)
 
 import uuid
 
-import event_exceptions
-from event_enums import EventCategory, EventStatus
-from event_models import Event
-from event_schema import EventSchema
+import utils.exceptions
+from models.enums import EventCategory, EventStatus
+from models.models import Event
 from pydantic import ValidationError
+from utils.validators import EventSchema
 
 
 class EventService:
@@ -94,7 +94,7 @@ class EventService:
 
         if event is None:
             logger.error(f"Event with event id {event_id} was not found")
-            raise event_exceptions.EventNotFound(event_id)
+            raise utils.exceptions.EventNotFound(event_id)
 
         return event
 
@@ -187,13 +187,13 @@ class EventService:
         event = self.event_repository.get_by_id(event_id)
 
         if event is None:
-            raise event_exceptions.EventNotFound(event_id)
+            raise utils.exceptions.EventNotFound(event_id)
 
         if self.registration_repository.is_registered(user_id, event_id):
-            raise event_exceptions.DuplicateRegistration(user_id, event_id)
+            raise utils.exceptions.DuplicateRegistration(user_id, event_id)
 
         if event.is_full:
-            raise event_exceptions.EventFullError(user_id, event_id)
+            raise utils.exceptions.EventFullError(user_id, event_id)
 
         registration = self.registration_repository.register(user_id, event_id)
         return registration
@@ -209,12 +209,12 @@ class EventService:
         event = self.event_repository.get_by_id(event_id)
 
         if event is None:
-            raise event_exceptions.EventNotFound(event_id)
+            raise utils.exceptions.EventNotFound(event_id)
 
         is_registered = self.registration_repository.is_registered(user_id, event_id)
 
         if is_registered is False:
-            raise event_exceptions.NotRegistered(user_id, event_id)
+            raise utils.exceptions.NotRegistered(user_id, event_id)
 
         removed_registration = self.registration_repository.unregister(
             user_id, event_id
@@ -230,10 +230,10 @@ class EventService:
         event = self.event_repository.get_by_id(event_id)
 
         if event is None:
-            raise event_exceptions.EventNotFound(event_id)
+            raise utils.exceptions.EventNotFound(event_id)
 
         if event.status == EventStatus.CANCELLED:
-            raise event_exceptions.EventAlreadyCancelled(event_id)
+            raise utils.exceptions.EventAlreadyCancelled(event_id)
 
         event.status = EventStatus.CANCELLED
         event_status_update = self.event_repository.update(event)
@@ -247,7 +247,7 @@ class EventService:
         event = self.event_repository.get_by_id(event_id)
 
         if event is None:
-            raise event_exceptions.EventNotFound(event_id)
+            raise utils.exceptions.EventNotFound(event_id)
 
         self.event_repository.delete(event_id)
         return True

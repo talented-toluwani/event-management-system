@@ -1,7 +1,7 @@
 import logging
 
-from event_database import get_connection
-from event_repository import EventRepository
+from database.connection import get_connection
+from database.event_repo import EventRepository
 
 connection = get_connection()
 

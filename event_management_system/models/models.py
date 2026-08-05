@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from event_enums import EventCategory, EventStatus, UserRole
+from models.enums import EventCategory, EventStatus, UserRole
 
 
 @dataclass

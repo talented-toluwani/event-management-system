@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from event_enums import EventCategory
+from models.enums import EventCategory
 from pydantic import BaseModel, Field, field_validator
 
 

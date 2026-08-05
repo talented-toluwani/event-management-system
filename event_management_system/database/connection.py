@@ -1,6 +1,6 @@
 import sqlite3
 
-from event_config import DATABASE_PATH
+from data.config import DATABASE_PATH
 
 
 def get_connection(): #provides a connection between the database and the sqlite 3 module

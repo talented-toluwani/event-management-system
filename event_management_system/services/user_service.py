@@ -1,7 +1,7 @@
 import re
 
-import event_exceptions
-from event_models import User
+import utils.exceptions
+from models.models import User
 
 
 class UserService:
@@ -67,7 +67,7 @@ class UserService:
         if existing_user is not None:
             return existing_user
         
-        raise event_exceptions.UserNotFound(user_id)
+        raise utils.exceptions.UserNotFound(user_id)
     
     def get_user_events(self, user_id:int):
 

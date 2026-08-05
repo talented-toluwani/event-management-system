@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime
 
-import event_exceptions
-from event_config import DATE_FORMAT, DISPLAY_DATE_FORMAT
-from event_enums import EventCategory, EventStatus, UserRole
+import utils.exceptions
+from data.config import DATE_FORMAT, DISPLAY_DATE_FORMAT
+from models.enums import EventCategory, EventStatus, UserRole
 
 
 class MenuHandler:
